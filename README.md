@@ -16,7 +16,7 @@ helm install --namespace redis -n 'redis-enterprise' ./redis-enterprise -f ./red
 * redisImage.tag: redis-enterprise version, for example: 5.0.2-15
 * redisImage.repository: redis-enterprise docker repository. default: redislabs/redis.
 * replicas: number of desired nodes. should be a odd number.
-* redisResources: a object that describes the amount of resources you would like to allocate for redis-enterprise nodes. for example (2 CPUs and 4GB RAM memory):
+* redisResources: an object that describes the amount of resources you would like to allocate for redis-enterprise nodes. for example (2 CPUs and 4GB RAM memory):
 ```yaml
 redisResources:
    limits:
@@ -27,10 +27,10 @@ redisResources:
     memory: 4096Mi
 ```
 * serviceAccount:
-  * serviceAccount.create: whatever to create or not a service account for redis-enterprise
+  * serviceAccount.create: whether to create or not a service account for redis-enterprise
   * serviceAccount.name: a specific name for the service account that will be used.
 * adminUsername: a username to be used inside redis-enterprise, default: demo@redislabs.com
-* adminPassword: if not set the chart will generate a random passowrd
+* adminPassword: if not set the chart will generate a random password
 * license: redis-enterprise license.
 * nodeSelector: specify a label selector to be used for nodes deployment.
 ```yaml
