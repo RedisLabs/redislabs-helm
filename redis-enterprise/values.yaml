@@ -1,0 +1,48 @@
+# Default values for redis.
+# This is a YAML-formatted file.
+
+redisImage:
+  repository: redislabs/redis
+  tag: 5.0.2-15
+  pullPolicy: IfNotPresent
+
+redisControllerImage:
+  repository: redislabs/k8s-controller
+  tag: latest
+  pullPolicy: IfNotPresent
+
+replicas: 3
+
+redisResources:
+   limits:
+    cpu: 2
+    memory: 4096Mi
+   requests:
+    cpu: 2
+    memory: 4096Mi
+
+controllerResources: {}
+
+serviceAccount:
+  create: true
+  # name: redis-svc
+
+adminUsername: "demo@redislabs.com"
+# adminPassword: test123
+
+license: ""
+
+nodeSelector: {}
+  # select a specific node pool, for example:
+  # cloud.google.com/gke-nodepool: default-pool
+
+persistentVolume:
+  enabled: false
+  size: 20Gi  # This needs to be *5 the size of redis memory resources
+  # storageClass: "-"
+
+externalUIServiceAnnotations: {}
+
+openShiftDeployemnt: false
+#imagePullSecrets:
+#- name: regsecret

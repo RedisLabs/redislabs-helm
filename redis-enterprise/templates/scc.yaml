@@ -1,0 +1,15 @@
+{{- if .Values.openShiftDeployemnt }}
+kind: SecurityContextConstraints
+apiVersion: v1
+metadata:
+  name: {{ template "redis-enterprise.fullname" . }}-scc
+allowPrivilegedContainer: false
+allowedCapabilities:
+  - SYS_RESOURCE
+runAsUser:
+  type: RunAsAny
+seLinuxContext:
+  type: RunAsAny
+users:
+  - system:serviceaccount:{{ .Release.Namespace }}:{{ template "redis-enterprise.serviceAccountName" . }}
+{{- end }}

@@ -1,0 +1,141 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ template "redis-enterprise.statefulsetName" . }}
+  labels:
+    app: {{ template "redis-enterprise.name" . }}
+    chart: {{ template "redis-enterprise.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+{{- if .Values.persistentVolume.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: redis-storage
+      labels:
+        app: {{ template "redis-enterprise.name" . }}
+        chart: {{ template "redis-enterprise.chart" . }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.persistentVolume.size | quote }}
+    {{- if .Values.persistentVolume.storageClass }}
+    {{- if (eq "-" .Values.persistentVolume.storageClass) }}
+      storageClassName: ""
+    {{- else }}
+      storageClassName: "{{ .Values.persistentVolume.storageClass }}"
+    {{- end }}
+    {{- end }}
+{{- end }}
+  serviceName: {{ template "redis-enterprise.fullname" . }}
+  replicas: {{ .Values.replicas }}
+  updateStrategy:
+    type: "RollingUpdate"
+  template:
+    metadata:
+      labels:
+        redis.io/role: node
+        app: {{ template "redis-enterprise.name" . }}
+        chart: {{ template "redis-enterprise.chart" . }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+    spec:
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - {{ template "redis-enterprise.name" . }}
+              - key: release
+                operator: In
+                values:
+                - {{ .Release.Name }}
+              - key: redis.io/role
+                operator: In
+                values:
+                - node
+            topologyKey: kubernetes.io/hostname
+      terminationGracePeriodSeconds: 31536000
+      serviceAccountName: {{ template "redis-enterprise.serviceAccountName" . }}
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      containers:
+      - name: redis
+        image: {{ .Values.redisImage.repository }}:{{ .Values.redisImage.tag }}
+        imagePullPolicy: {{ .Values.redisImage.pullPolicy }}
+        readinessProbe:
+          exec:
+            command:
+              # check that the node is bootstrapped and that its connected and synced.
+              - bash
+              - -c
+              - curl --silent localhost:8080/v1/bootstrap && /opt/redislabs/bin/rladmin status nodes | grep node:$(cat /etc/opt/redislabs/node.id) | grep OK
+          initialDelaySeconds: 20
+          timeoutSeconds: 5
+        lifecycle:
+          preStop:
+            exec:
+              command:
+                # enslave the node, if this current node is master, change the master to the first slave node.
+                - bash
+                - -c
+                - /opt/redislabs/bin/rladmin node $(cat /etc/opt/redislabs/node.id) enslave && ((/opt/redislabs/bin/rladmin status nodes | grep node:$(cat /etc/opt/redislabs/node.id) | grep -q master) && /opt/redislabs/bin/rlutil change_master master=$(/opt/redislabs/bin/rladmin status nodes | grep slave | head -1 | cut -d " " -f 1| cut -d ":" -f2) && sleep 10) || /bin/true
+        resources:
+{{ toYaml .Values.redisResources | indent 10 }}
+        ports:
+        - containerPort: 8001
+        - containerPort: 8443
+        - containerPort: 9443
+        securityContext:
+          capabilities:
+            add:
+               - SYS_RESOURCE
+{{- if .Values.persistentVolume.enabled }}
+        volumeMounts:
+          - mountPath: "/opt/persistent"
+            name: redis-storage
+{{- end }}
+        env:
+          - name: K8S_ORCHASTRATED_DEPLOYMENT
+            value: "yes"
+          - name: JOIN_HOSTNAME
+            value: {{ template "redis-enterprise.fullname" . }}
+{{- if .Values.persistentVolume.enabled }}
+          - name: PERSISTANCE_PATH
+            value: /opt/persistent
+{{- end }}
+          - name: K8S_SERVICE_NAME
+            value: {{ template "redis-enterprise.fullname" . }}
+          - name: BOOTSTRAP_HANDLE_REDIRECTS
+            value: "enabled"
+          - name: BOOTSTRAP_CLUSTER_FQDN
+            value: {{ template "redis-enterprise.clusterDNS" . }}
+          - name: BOOTSTRAP_DMC_THREADS
+            value: "10"
+          - name: BOOTSTRAP_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "redis-enterprise.fullname" . }}
+                key: username
+          - name: BOOTSTRAP_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "redis-enterprise.fullname" . }}
+                key: password
+          - name: BOOTSTRAP_LICENSE
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "redis-enterprise.fullname" . }}
+                key: license

@@ -1,0 +1,18 @@
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "redis-enterprise.fullname" . }}
+  labels:
+    app: {{ template "redis-enterprise.name" . }}
+    chart: {{ template "redis-enterprise.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "redis-enterprise.name" . }}
+      chart: {{ template "redis-enterprise.chart" . }}
+      release: {{ .Release.Name }}
+      heritage: {{ .Release.Service }}
+      redis.io/role: node
+  maxUnavailable: 1

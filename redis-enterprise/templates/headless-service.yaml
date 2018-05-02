@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "redis-enterprise.fullname" . }}
+  labels:
+    app: {{ template "redis-enterprise.name" . }}
+    chart: {{ template "redis-enterprise.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  ports:
+  - port: 9443
+    name: ui
+  - port: 8001
+    name: sentinel
+  clusterIP: None
+  selector:
+    app: {{ template "redis-enterprise.name" . }}
+    release: {{ .Release.Name }}
+    redis.io/role: node
