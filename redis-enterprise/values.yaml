@@ -46,3 +46,10 @@ externalUIServiceAnnotations: {}
 openShiftDeployemnt: false
 #imagePullSecrets:
 #- name: regsecret
+
+# Override the statefulset name
+#statefulsetNameOverride: rediscluster
+
+# For debugging use only, this will allow you to run redis entereprise on a single host.
+# This will effectivly might make you'r cluster non HA safe
+haSafetyOff: false

@@ -47,6 +47,7 @@ spec:
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
+    {{- if eq .Values.haSafetyOff false }}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -65,6 +66,7 @@ spec:
                 values:
                 - node
             topologyKey: kubernetes.io/hostname
+    {{- end }}
       terminationGracePeriodSeconds: 31536000
       serviceAccountName: {{ template "redis-enterprise.serviceAccountName" . }}
     {{- with .Values.imagePullSecrets }}

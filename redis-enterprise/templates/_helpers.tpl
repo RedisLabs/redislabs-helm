@@ -66,7 +66,15 @@ Create the name of the service account to use
 {{- if .Values.statefulsetNameOverride -}}
     {{ .Values.statefulsetNameOverride }}
 {{- else -}}
+{{/*
+Workaround for 5.0.2, the statefulset name should not contain extra '-'
+*/}}
+{{- if contains "5.0.2" .Values.redisImage.tag -}}
+    {{- $name := default .Chart.Name .Values.nameOverride -}}
+    {{ printf "%scluster" .Release.Name | replace "-" "" }}
+{{- else -}}
     {{ template "redis-enterprise.fullname" . }}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 

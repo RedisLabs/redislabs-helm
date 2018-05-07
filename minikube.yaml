@@ -1,0 +1,12 @@
+
+redisResources:
+   requests:
+    cpu: 100m
+    memory: 512Mi
+persistentVolume:
+  enabled: false
+
+replicas: 1
+#statefulsetNameOverride: redisenterprise
+
+haSafetyOff: true

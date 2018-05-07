@@ -11,6 +11,15 @@ To install the chart with an override file:
 helm install --namespace redis -n 'redis-enterprise' ./redis-enterprise -f ./redis-enterprise/values.yaml -f ./override-values.yaml
 ```
 
+### GKE quickstart
+
+```bash
+password=$(gcloud container clusters describe YOUR_SETUP_NAME --zone us-central1-a | grep password | cut -d":" -f 2 | tr -d " ")
+kubectl --username=admin --password=$password apply -f rbac_tiller.yaml
+helm init --service-account tiller
+helm install --namespace redis -n 'prod' ./redis-enterprise
+```
+
 ### Configuration options
 
 * redisImage.tag: redis-enterprise version, for example: 5.0.2-15
