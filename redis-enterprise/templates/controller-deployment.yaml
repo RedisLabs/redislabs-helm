@@ -24,6 +24,10 @@ spec:
         heritage: {{ .Release.Service }}
         redis.io/role: controller
     spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       serviceAccountName: {{ template "redis-enterprise.serviceAccountName" . }}
       containers:
       - name: controller
@@ -48,3 +52,9 @@ spec:
               secretKeyRef:
                 name: {{ template "redis-enterprise.fullname" . }}
                 key: password
+          - name: BDB_SERVICE_TYPE
+            # comma separated list. e.g. 'cluster_ip,headless'. Possible values: cluster_ip, headless
+            value: {{ .Values.redisControllerConfiguration.bdbServiceType }}
+          - name: SERVICE_NAMING
+            # comma separated list. e.g. 'redis-port,bdb_name' Possible values: redis-port, bdb_name
+            value: {{ .Values.redisControllerConfiguration.serviceNaming }}

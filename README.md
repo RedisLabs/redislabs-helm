@@ -22,8 +22,8 @@ helm install --namespace redis -n 'prod' ./redis-enterprise
 
 ### Configuration options
 
-* redisImage.tag: redis-enterprise version, for example: 5.0.2-15
 * redisImage.repository: redis-enterprise docker repository. default: redislabs/redis.
+* redisImage.tag: redis-enterprise version, for example: 5.0.2-15.
 * replicas: number of desired nodes. should be a odd number.
 * redisResources: an object that describes the amount of resources you would like to allocate for redis-enterprise nodes. for example (2 CPUs and 4GB RAM memory):
 ```yaml
@@ -35,6 +35,11 @@ redisResources:
     cpu: 2
     memory: 4096Mi
 ```
+* redisControllerConfiguration
+  * redisControllerConfiguration.bdbServiceType: comma separated list of service types to create for each bdb. 
+    Possible values: cluster_ip, headless. default: "cluster_ip,headless".  
+  * redisControllerConfiguration.serviceNaming: comma separated list of naming convention for bdb service.
+    Possible values: redis-port (service will appear as redis-16784), bdb_name. default: "bdb_name".
 * serviceAccount:
   * serviceAccount.create: whether to create or not a service account for redis-enterprise
   * serviceAccount.name: a specific name for the service account that will be used.

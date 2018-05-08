@@ -6,11 +6,6 @@ redisImage:
   tag: 5.0.2-20
   pullPolicy: IfNotPresent
 
-redisControllerImage:
-  repository: redislabs/k8s-controller
-  tag: 46_ad6ef27
-  pullPolicy: IfNotPresent
-
 replicas: 3
 
 redisResources:
@@ -20,6 +15,15 @@ redisResources:
    requests:
     cpu: 2
     memory: 4096Mi
+
+redisControllerImage:
+  repository: redislabs/k8s-controller
+  tag: 46_ad6ef27
+  pullPolicy: IfNotPresent
+
+redisControllerConfiguration:
+  bdbServiceType: "cluster_ip,headless"
+  serviceNaming: "bdb_name"
 
 controllerResources: {}
 
