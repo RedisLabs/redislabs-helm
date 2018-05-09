@@ -11,7 +11,6 @@ spec:
   selector:
     matchLabels:
       app: {{ template "redis-enterprise.name" . }}
-      chart: {{ template "redis-enterprise.chart" . }}
       release: {{ .Release.Name }}
       heritage: {{ .Release.Service }}
       redis.io/role: node

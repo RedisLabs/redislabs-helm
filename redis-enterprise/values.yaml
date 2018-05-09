@@ -3,12 +3,12 @@
 
 redisImage:
   repository: redislabs/redis
-  tag: 5.0.2-15
+  tag: 5.0.2-20
   pullPolicy: IfNotPresent
 
 redisControllerImage:
   repository: redislabs/k8s-controller
-  tag: latest
+  tag: 46_ad6ef27
   pullPolicy: IfNotPresent
 
 replicas: 3
