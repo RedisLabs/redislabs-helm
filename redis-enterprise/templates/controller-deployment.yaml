@@ -8,7 +8,13 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "redis-enterprise.name" . }}
+      release: {{ .Release.Name }}
+      heritage: {{ .Release.Service }}
+      redis.io/role: controller
   template:
     metadata:
       labels:
