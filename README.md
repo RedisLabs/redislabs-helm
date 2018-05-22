@@ -20,6 +20,13 @@ helm init --service-account tiller
 helm install --namespace redis -n 'prod' ./redis-enterprise
 ```
 
+### Generate static files
+To generate static yaml files from the chart file you can run the following command (note the output dir should exists before running this):
+```bash
+helm template --namespace redis -n 'prod' ./redis-enterprise -f ./redis-enterprise/values.yaml -f ./override.yaml --output-dir /tmp/helm_out
+```
+> override files are not mandatory, its only needed if one would like to override the defaults values.
+
 ### Configuration options
 
 * redisImage.repository: redis-enterprise docker repository. default: redislabs/redis.
