@@ -18,7 +18,7 @@ redisResources:
 
 redisControllerImage:
   repository: redislabs/k8s-controller
-  tag: 46_ad6ef27
+  tag: 48_7e5bd8b
   pullPolicy: IfNotPresent
 
 redisControllerConfiguration:
