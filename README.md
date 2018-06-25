@@ -31,7 +31,7 @@ helm template --namespace redis -n 'prod' ./redis-enterprise -f ./redis-enterpri
 
 * redisImage.repository: redis-enterprise docker repository. default: redislabs/redis.
 * redisImage.tag: redis-enterprise version, for example: 5.0.2-15.
-* replicas: number of desired nodes. should be a odd number.
+* numberofpods: number of desired redis-enterprise nodes. should be a odd number.
 * redisResources: an object that describes the amount of resources you would like to allocate for redis-enterprise nodes. for example (2 CPUs and 4GB RAM memory):
 ```yaml
 redisResources:
