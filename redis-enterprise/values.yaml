@@ -6,7 +6,7 @@ redisImage:
   tag: 5.0.2-20
   pullPolicy: IfNotPresent
 
-replicas: 3
+numberofpods: 3
 
 redisResources:
    limits:
