@@ -1,9 +1,9 @@
 # Redis Labs helm repository
 
-## GKE quickstart
+## Helm initialization on GKE
 
 ```bash
-password=$(gcloud container clusters describe YOUR_SETUP_NAME --zone us-central1-a | grep password | cut -d":" -f 2 | tr -d " ")
+password=$(gcloud container clusters describe YOUR_SETUP_NAME --zone YOUR_ZONE | grep password | cut -d":" -f 2 | tr -d " ")
 kubectl --username=admin --password=$password apply -f rbac_tiller.yaml
 helm init --service-account tiller
 helm install --namespace redis -n 'redis-enterprise' ./redis-enterprise
