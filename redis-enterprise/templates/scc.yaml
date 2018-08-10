@@ -1,4 +1,4 @@
-{{- if .Values.openShiftDeployemnt }}
+{{- if .Values.openShiftDeployment }}
 kind: SecurityContextConstraints
 apiVersion: v1
 metadata:
