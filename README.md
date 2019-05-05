@@ -1,5 +1,8 @@
 # Redis Labs helm repository
 
+## Deprecation Notice
+This repository is deprecated and should not be used, to deploy Redis Enterprise on Kubernetes pelease refer to the Redis Enterprise Operator: https://github.com/RedisLabs/redis-enterprise-k8s-docs
+
 ## Redis Enterprise Chart
 
  To install the chart just run: 
