@@ -47,7 +47,7 @@ persistentVolume:
 
 externalUIServiceAnnotations: {}
 
-openShiftDeployemnt: false
+openShiftDeployment: false
 #imagePullSecrets:
 #- name: regsecret
 

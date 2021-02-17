@@ -78,7 +78,7 @@ externalUIServiceAnnotations:
   service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
 ```
 
-* openShiftDeployemnt: set to `true` to enable openshift SCC resource creation. default: `false`.
+* openShiftDeployment: set to `true` to enable openshift SCC resource creation. default: `false`.
 
 * imagePullSecrets: Allows the user to fetch the images using a Dockerhub specific user, example:
 ```yaml
